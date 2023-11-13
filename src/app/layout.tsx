@@ -1,3 +1,5 @@
+import Header from '@/layouts/header';
+import { Box } from '@chakra-ui/react';
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import './globals.css';
@@ -14,7 +16,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="vi">
       <body className={inter.className}>
-        <Providers>{children}</Providers>
+        <Providers>
+          <Header />
+          <Box minH="calc(100vh - 60px)">{children}</Box>
+        </Providers>
       </body>
     </html>
   );

@@ -1,95 +1,92 @@
-import Image from 'next/image'
-import styles from './page.module.css'
+import { APIClient } from '@/utils/api-client';
+import { redirect } from 'next/navigation';
 
-export default function Home() {
-  return (
-    <main className={styles.main}>
-      <div className={styles.description}>
-        <p>
-          Get started by editing&nbsp;
-          <code className={styles.code}>src/app/page.tsx</code>
-        </p>
-        <div>
-          <a
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{' '}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className={styles.vercelLogo}
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
-        </div>
-      </div>
+type Props = {
+  params: { id: string };
+  searchParams: { [key: string]: string | string[] | undefined };
+};
 
-      <div className={styles.center}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-      </div>
+// export async function generateMetadata({ params, searchParams }: Props, parent: ResolvingMetadata): Promise<Metadata> {
+//   // read route params
+//   const id = params.id;
 
-      <div className={styles.grid}>
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Docs <span>-&gt;</span>
-          </h2>
-          <p>Find in-depth information about Next.js features and API.</p>
-        </a>
+//   // fetch data
+//   // const product = await fetch(`https://.../${id}`).then((res) => res.json())
 
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Learn <span>-&gt;</span>
-          </h2>
-          <p>Learn about Next.js in an interactive course with&nbsp;quizzes!</p>
-        </a>
+//   // optionally access and extend (rather than replace) parent metadata
+//   // const previousImages = (await parent).openGraph?.images || []
 
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Templates <span>-&gt;</span>
-          </h2>
-          <p>Explore starter templates for Next.js.</p>
-        </a>
+//   return {
+//     title: 'Home1',
+//     openGraph: {
+//       // images: ['/some-specific-page-image.jpg', ...previousImages],
+//     }
+//   };
+// }
 
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Deploy <span>-&gt;</span>
-          </h2>
-          <p>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
-    </main>
-  )
+export default async function Home({ searchParams }: Props) {
+  const { token: tokenFromUrl = '' } = searchParams;
+  // const token = typeof tokenFromUrl === 'string' ? tokenFromUrl : tokenFromUrl[0];
+  const token =
+    'eyJhbGciOiJSUzI1NiJ9.eyJpc3MiOiJpc3N1ZXIiLCJzdWIiOiJzdWJqZWN0IiwiYXVkIjpbImF1ZGllbmNlIiwiaW9zIiwib25saW5lIiwidHJhZGVhcGkiLCJhdXRoIl0sImV4cCI6MTY5OTg3MTY1NCwibmJmIjoxNjk5ODQyNzk0LCJpYXQiOjE2OTk4NDI4NTQsImFsbG93U2hhcmluZ1Byb2ZpbGUiOiIiLCJyb2xlcyI6IltdIiwiYWNjb3VudFR5cGUiOm51bGwsInZfdXNlcklkIjoiMjMxNDQxMDU3Mjc4MjYyNCIsInVzZXJJZCI6Im51bGwiLCJ2ZXJzaW9uIjoiVjIiLCJjdXN0b21lck5hbWUiOiJIT8OATkcgQU5IIERVWcOKTiIsInRyYWRpbmdFeHAiOjAsImlkZ0lkIjpudWxsLCJwaG9uZSI6bnVsbCwiY3VzdG9tZXJJZCI6bnVsbCwicmV0aXJlZEFjY291bnRzIjpudWxsLCJ1c2VyVHlwZSI6bnVsbCwiZW1haWwiOiJhMWFAZ21haWwuY29tIiwidXNlcm5hbWUiOiJhMWFAZ21haWwuY29tIiwic3RhdHVzIjoiTm90IHVzZWQifQ.HQ0R-_c8maQQWA-5Ga4thMtOoMCKIRQnWp6AH_E6YvF3P56gMK9IZH-qOQymN7NkMvfiizTsBFy0hS195UhRj4sjuAZGWOLA84PVf21EFqlpguZtybKAaz4DIlvuDqsD4HDsR8875viFbhCn9F4vG-c3rFcMjSxXLOXjYziycIZFZiABUOJhfwYZWSmEmHws6Ml-FEc2phsFLDsRn3lHqqbqZckg4wtL6p3kiw8BuJIXM9b62I4Xs4AOM72KZYIK2Qh25L409n7sRSnzyCSSkStFf_FOKtcjLYofZK93Uozt1PczhWdZqmEFv-5W3sCW7NgRagw8AphHM3t920J4uQ';
+
+  // const router = useRouter();
+  // const { token: tokenFromUrl = '' } = router.query;
+  // const token = typeof tokenFromUrl === 'string' ? tokenFromUrl : tokenFromUrl[0];
+  // const setUserInfo = useSetRecoilState(userInfoState);
+  // const logout = useLogout();
+
+  // async function create(formData: FormData) {
+  //   'use server';
+  //   console.log('ducnh99');
+
+  //   cookies().set(CK_TOKEN_KEY, token);
+  // }
+
+  // if (token) {
+  //   console.log('ducnh token2', token);
+  //   cookies().set(CK_TOKEN_KEY, token);
+  // }
+
+  const response = await APIClient.request({
+    url: '/api/user-info',
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  });
+
+  if (response.status === 401) {
+    redirect('/dang-nhap');
+  }
+
+  if (response.status < 200 || response.status >= 400) {
+    const text = await response.text();
+    throw new Error(`Failed to fetch user profile: ${text}`);
+  }
+
+  const userInfo = await response.json();
+
+  // useEffect(() => {
+  //   if (token) {
+  //     Cookies.set(CK_TOKEN_KEY, token);
+  //     APIClient.request({
+  //       url: '/api/user-info',
+  //       headers: { Authorization: `Bearer ${token}` }
+  //     })
+  //       .then((response) => {
+  //         if (isEmpty(response)) {
+  //           logout();
+  //           return;
+  //         }
+  //         const { username, fullName, userId } = response;
+  //         setUserInfo({ username, fullName, userId });
+  //         router.replace('/', undefined, { shallow: true });
+  //       })
+  //       .catch((error) => {
+  //         logout();
+  //       });
+  //   }
+  // }, [logout, router, setUserInfo, token]);
+
+  return <main>{userInfo?.fullName}</main>;
 }

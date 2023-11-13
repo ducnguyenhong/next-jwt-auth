@@ -3,9 +3,14 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
+    "dev": "cross-env NODE_ENV=development ENV=local next dev -p 1234",
+    "dev:production": "cross-env NODE_ENV=development ENV=prod next dev -p 1234",
+    "build": "cross-env NODE_ENV=production ENV=local next build",
+    "build:uat": "cross-env NODE_ENV=production ENV=uat next build",
+    "build:production": "cross-env NODE_ENV=production ENV=prod next build",
+    "start": "cross-env NODE_ENV=production ENV=local next start",
+    "start:uat": "cross-env NODE_ENV=production ENV=uat next start -p 1234",
+    "start:production": "cross-env NODE_ENV=production ENV=prod next start -p 1234",
     "lint": "next lint"
   },
   "dependencies": {
@@ -13,14 +18,19 @@
     "@chakra-ui/react": "^2.8.2",
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.0",
+    "cross-env": "^7.0.3",
     "framer-motion": "^10.16.4",
+    "js-cookie": "^3.0.5",
     "jwt-decode": "^4.0.0",
+    "lodash": "^4.17.21",
     "next": "14.0.2",
     "react": "^18",
     "react-dom": "^18",
-    "react-hook-form": "^7.48.2"
+    "react-hook-form": "^7.48.2",
+    "recoil": "^0.7.7"
   },
   "devDependencies": {
+    "@types/js-cookie": "^3.0.6",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
